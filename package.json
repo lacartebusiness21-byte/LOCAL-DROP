@@ -1,0 +1,69 @@
+{
+  "name": "localdrop",
+  "version": "2.0.0",
+  "description": "Transfert de fichiers local (Android/iPhone -> PC Windows/Linux) via QR Code, sans Internet ni cloud.",
+  "main": "electron/main.js",
+  "homepage": "https://blcservices.sn",
+  "author": {
+    "name": "Business LaCarte",
+    "email": "blcservice8@gmail.com"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "dev:server": "node scripts/dev-server.js",
+    "build": "node scripts/build.js",
+    "build:windows": "node scripts/build.js --target windows",
+    "build:linux": "node scripts/build.js --target linux",
+    "package:linux": "bash scripts/build-linux.sh",
+    "package:windows": "powershell -ExecutionPolicy Bypass -File scripts/build-windows.ps1"
+  },
+  "dependencies": {
+    "busboy": "^1.6.0",
+    "express": "^4.19.2",
+    "qrcode": "^1.5.3",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "build": {
+    "appId": "sn.blcservices.localdrop",
+    "productName": "LocalDrop",
+    "files": [
+      "electron/**/*",
+      "server/**/*",
+      "public/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraResources": [],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "assets/icon.png",
+      "category": "Utility",
+      "maintainer": "Business LaCarte <blcservice8@gmail.com>"
+    }
+  }
+}

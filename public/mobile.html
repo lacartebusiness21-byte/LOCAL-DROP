@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>LocalDrop</title>
+<link rel="stylesheet" href="/css/mobile.css" />
+</head>
+<body>
+  <div class="mobile-shell">
+    <h1 class="mobile-title">LocalDrop</h1>
+
+    <div id="connection-state" class="connection-state">
+      <p id="connection-text">Connexion à la session...</p>
+    </div>
+
+    <div id="upload-area" class="upload-area hidden">
+      <p class="connected-line">Connecté à <strong id="pc-name">—</strong></p>
+
+      <label for="file-input" class="pick-btn">+ Sélectionner des fichiers</label>
+      <input
+        id="file-input"
+        type="file"
+        multiple
+        accept="image/*,.heic,.heif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,video/*"
+      />
+
+      <div id="selection-summary" class="selection-summary hidden">
+        <span id="file-count">0 fichiers</span>
+        <span id="file-total-size">0 MB</span>
+      </div>
+
+      <ul id="selected-files" class="selected-files"></ul>
+
+      <button id="send-btn" class="send-btn" disabled>ENVOYER</button>
+
+      <div id="progress-area" class="progress-area hidden">
+        <div id="current-file-name" class="current-file-name"></div>
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <div class="progress-meta">
+          <span id="progress-percent">0%</span>
+          <span id="progress-detail">0 MB / 0 MB</span>
+        </div>
+        <div class="progress-meta">
+          <span id="progress-speed">—</span>
+          <span id="progress-eta">—</span>
+        </div>
+      </div>
+
+      <div id="done-message" class="done-message hidden">✅ Transfert terminé</div>
+    </div>
+
+    <div id="error-area" class="error-area hidden"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/mobile.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LocalDrop</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div id="welcome-overlay" class="overlay hidden">
+    <div class="welcome-card">
+      <h2>Bienvenue sur LocalDrop</h2>
+      <p>Pour recevoir des fichiers :</p>
+      <ol>
+        <li>Connectez votre téléphone au même réseau que ce PC (Wi-Fi local ou hotspot du PC).</li>
+        <li>Scannez le QR Code.</li>
+        <li>Sélectionnez vos fichiers.</li>
+        <li>Appuyez sur Envoyer.</li>
+      </ol>
+      <button id="welcome-continue" class="btn btn-primary">Continuer</button>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-dot"></span>
+        LocalDrop
+      </div>
+      <button id="theme-toggle" class="icon-btn" title="Basculer le thème">🌙</button>
+    </header>
+
+    <main class="app-main">
+      <p class="tagline">Transfert de fichiers local — sans Internet, sans cloud</p>
+
+      <div id="firewall-banner" class="firewall-banner hidden">
+        <div class="firewall-title">⚠️ Accès réseau nécessaire</div>
+        <p id="firewall-message">LocalDrop doit être autorisé dans le pare-feu Windows pour recevoir des fichiers depuis les téléphones.</p>
+        <button id="firewall-dismiss" class="btn btn-secondary">Compris</button>
+      </div>
+
+      <section class="qr-card">
+        <div class="qr-title-row">
+          <div class="qr-title">📱 Recevoir des fichiers</div>
+          <button id="refresh-qr" class="icon-btn" title="Actualiser le QR Code">⟳</button>
+        </div>
+
+        <div id="qr-container" class="qr-container">
+          <img id="qr-image" alt="QR Code de connexion" />
+        </div>
+
+        <p class="qr-hint">Scannez ce code avec votre téléphone</p>
+
+        <div id="status-line" class="status-line status-waiting">
+          <span class="status-dot"></span>
+          <span id="status-text">En attente d'une connexion...</span>
+        </div>
+
+        <div id="clients-count-line" class="clients-count-line">Appareils connectés : <strong id="clients-count">0</strong></div>
+
+        <div class="badge-row">
+          <span class="badge">Réseau local détecté</span>
+          <span class="badge badge-muted">Internet non requis</span>
+        </div>
+
+        <div class="address-block">
+          <span class="label">Adresse locale :</span>
+          <div class="address-row">
+            <code id="local-url">—</code>
+            <button id="copy-address" class="btn btn-secondary btn-compact">Copier</button>
+          </div>
+        </div>
+
+        <div id="multi-address" class="multi-address hidden">
+          <span class="label">Réseaux disponibles :</span>
+          <select id="address-select"></select>
+        </div>
+
+        <div class="folder-block">
+          <span class="label">Dossier de destination :</span>
+          <code id="folder-path">—</code>
+          <div class="folder-actions">
+            <button id="choose-folder" class="btn btn-secondary">Choisir le dossier</button>
+            <button id="open-folder" class="btn btn-secondary">Ouvrir le dossier</button>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="new-session" class="btn btn-secondary">Nouvelle session</button>
+          <button id="cancel-session" class="btn btn-danger">Annuler</button>
+        </div>
+      </section>
+
+      <section id="diagnostic-panel" class="diagnostic-panel">
+        <button id="diagnostic-toggle" class="diagnostic-toggle">🔧 Diagnostic <span id="diagnostic-caret">▾</span></button>
+        <div id="diagnostic-body" class="diagnostic-body hidden">
+          <div class="diag-row"><span>Système</span><span id="diag-platform">—</span></div>
+          <div class="diag-row"><span>Interface</span><span id="diag-interface">—</span></div>
+          <div class="diag-row"><span>IPv4</span><span id="diag-ipv4">—</span></div>
+          <div class="diag-row"><span>Port</span><span id="diag-port">—</span></div>
+          <div class="diag-row"><span>Serveur</span><span id="diag-server">—</span></div>
+          <div class="diag-row"><span>WebSocket</span><span id="diag-websocket">—</span></div>
+          <div class="diag-row"><span>Réseau local</span><span id="diag-firewall">—</span></div>
+          <div class="diag-row"><span>Internet</span><span>Non requis</span></div>
+          <label class="autostart-row">
+            <input type="checkbox" id="autostart-checkbox" />
+            Lancer LocalDrop au démarrage de Windows
+          </label>
+          <label class="autostart-row">
+            <input type="checkbox" id="start-minimized-checkbox" />
+            Démarrer LocalDrop minimisé (dans la zone de notification)
+          </label>
+          <button id="test-connection" class="btn btn-primary">Tester la connexion</button>
+        </div>
+      </section>
+
+      <section id="transfer-panel" class="transfer-panel hidden">
+        <h3>Réception</h3>
+        <div id="global-progress-label" class="progress-label">0 fichier</div>
+        <div class="progress-bar"><div id="global-progress-fill" class="progress-fill"></div></div>
+        <ul id="file-list" class="file-list"></ul>
+      </section>
+
+      <section id="history-panel" class="history-panel">
+        <button id="history-toggle" class="diagnostic-toggle">🕓 Historique <span id="history-caret">▾</span></button>
+        <div id="history-body" class="history-body hidden">
+          <ul id="history-list" class="history-list">
+            <li class="history-empty">Aucun transfert pour le moment.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="toast-area" class="toast-area" aria-live="polite"></section>
+    </main>
+
+    <footer class="app-footer">
+      <span id="pc-name-footer">—</span>
+      <span class="dot-sep">·</span>
+      <span>Fonctionne sans Internet ni routeur (Wi-Fi local ou hotspot requis)</span>
+    </footer>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
